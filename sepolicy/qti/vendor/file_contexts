@@ -43,7 +43,7 @@
 /(odm|vendor/odm)/bin/init\.oplus\.wifi\.sh    u:object_r:vendor_qti_init_shell_exec:s0
 
 # IR
-/(odm|vendor/odm)/bin/hw/android\.hardware\.ir\-service\.oplus    u:object_r:hal_ir_default_exec:s0
+/(odm|vendor/odm)/bin/hw/android\.hardware\.ir\-service(\.oplus)? u:object_r:hal_ir_default_exec:s0
 /dev/oplus_consumer_ir                                            u:object_r:oplus_consumer_ir_device:s0
 
 # Logo
