@@ -1,4 +1,8 @@
+hal_client_domain(hal_power_default, vendor_hal_oplus_touch)
+binder_call(hal_power_default, hal_oplus_touch_aidl);
+
 allow hal_power_default vendor_latency_device:chr_file rw_file_perms;
+allow hal_power_default hal_oplus_touch_aidl_service:service_manager find;
 
 rw_dir_file(hal_power_default, vendor_proc_display)
 rw_dir_file(hal_power_default, vendor_sysfs_sde_crtc)
