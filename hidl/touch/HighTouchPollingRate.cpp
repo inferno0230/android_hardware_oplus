@@ -20,12 +20,23 @@
 
 #include <android-base/file.h>
 
+#ifdef USES_OPLUS_TOUCH
+#include <aidl/vendor/oplus/hardware/touch/IOplusTouch.h>
+#include <android/binder_manager.h>
+#include <android-base/logging.h>
+#else
 using ::android::base::ReadFileToString;
 using ::android::base::WriteStringToFile;
+#endif // USES_OPLUS_TOUCH
 
 namespace {
 
+#ifdef USES_OPLUS_TOUCH
+#define GAME_MODE_ENABLE_SWITCH 26
+#define GAME_MODE_PARAM_VAL 0x258
+#else
 constexpr const char* kGameSwitchEnablePath = "/proc/touchpanel/game_switch_enable";
+#endif // USES_OPLUS_TOUCH
 
 }  // anonymous namespace
 
@@ -35,13 +46,39 @@ namespace touch {
 namespace V1_0 {
 namespace implementation {
 
+#ifdef USES_OPLUS_TOUCH
+using ::aidl::vendor::oplus::hardware::touch::IOplusTouch;
+static std::string value;
+#endif // USES_OPLUS_TOUCH
+
 Return<bool> HighTouchPollingRate::isEnabled() {
+#ifdef USES_OPLUS_TOUCH
+    std::shared_ptr<IOplusTouch> mTouchService;
+    const std::string instance = std::string() + IOplusTouch::descriptor + "/default";
+    mTouchService = IOplusTouch::fromBinder(ndk::SpAIBinder(
+        AServiceManager_waitForService(instance.c_str())));
+
+    mTouchService->touchReadNodeFile(0, GAME_MODE_ENABLE_SWITCH, &value);
+    return value != "0";
+#else
     std::string value;
     return ReadFileToString(kGameSwitchEnablePath, &value) && value[0] != '0';
+#endif // USES_OPLUS_TOUCH
 }
 
 Return<bool> HighTouchPollingRate::setEnabled(bool enabled) {
+#ifdef USES_OPLUS_TOUCH
+    std::shared_ptr<IOplusTouch> mTouchService;
+    const std::string instance = std::string() + IOplusTouch::descriptor + "/default";
+    mTouchService = IOplusTouch::fromBinder(ndk::SpAIBinder(
+        AServiceManager_waitForService(instance.c_str())));
+
+    int returnValue;
+    mTouchService->touchWriteNodeFile(0, GAME_MODE_ENABLE_SWITCH, enabled ? std::to_string(GAME_MODE_PARAM_VAL) : "0", &returnValue);
+    return true;
+#else
     return WriteStringToFile(enabled ? "1" : "0", kGameSwitchEnablePath, true);
+#endif // USES_OPLUS_TOUCH
 }
 
 }  // namespace implementation
