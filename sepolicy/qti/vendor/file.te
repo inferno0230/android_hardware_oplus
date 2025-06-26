@@ -27,6 +27,9 @@ type vendor_sysfs_sde_crtc, fs_type, sysfs_type;
 # Input
 type proc_bus_input, fs_type, proc_type;
 
+# NVRAM
+type nvram_socket, file_type;
+
 # Performance
 type vendor_proc_oplus_scheduler, fs_type, proc_type;
 
