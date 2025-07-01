@@ -205,6 +205,14 @@
         </interface>
     </hal>
     <hal format="aidl" optional="true">
+        <name>vendor.oplus.hardware.pogo_keyboard</name>
+        <version>1</version>
+        <interface>
+            <name>IPogoKeyboard</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
         <name>vendor.oplus.hardware.radio</name>
         <version>1-2</version>
         <interface>
