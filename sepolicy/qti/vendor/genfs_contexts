@@ -47,6 +47,9 @@ genfscon sysfs /devices/platform/soc/ae00000.qcom,mdss_mdp/drm/card0/sde-crtc-2/
 genfscon proc /oplus_scheduler                       u:object_r:vendor_proc_oplus_scheduler:s0
 genfscon proc /task_info/task_sched_info/tids_set    u:object_r:vendor_proc_oplus_scheduler:s0
 
+# Pogo keyboard
+genfscon proc /pogopin u:object_r:vendor_proc_pogo_keyboard:s0
+
 # Sensors
 genfscon proc /sensor/als_cali                        u:object_r:vendor_proc_oplus_als_file:s0
 genfscon proc /sensor/pressure_cali                   u:object_r:vendor_proc_eng_cali_file:s0

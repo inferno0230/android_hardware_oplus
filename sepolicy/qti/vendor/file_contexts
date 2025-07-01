@@ -92,6 +92,11 @@
 /dev/block/platform/soc/4804000\.ufshc/by-name/splash_[ab]             u:object_r:vendor_custom_ab_block_device:s0
 /dev/block/platform/soc/4804000\.ufshc/by-name/vbmeta_vendor_[ab]      u:object_r:vendor_custom_ab_block_device:s0
 
+# Pogo keyboard
+/odm/bin/hw/vendor\.oplus\.hardware\.pogo_keyboard-service  u:object_r:hal_pogo_keyboard_aidl_exec:s0
+/dev/pogo_keyboard                                          u:object_r:pogo_keyboard_device:s0
+/dev/ttyHS5                                                 u:object_r:pogo_keyboard_device:s0
+
 # Performance
 /(odm|vendor/odm)/bin/hw/vendor-oplus-hardware-performance-V1-service    u:object_r:hal_oplus_performance_aidl_exec:s0
 

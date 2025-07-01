@@ -31,6 +31,9 @@ vendor.oplus.hardware.osense.client.IOsenseAidlHalReporter/default    u:object_r
 # Performance
 vendor.oplus.hardware.performance.IPerformance/default    u:object_r:hal_oplus_performance_aidl_service:s0
 
+# Pogo keyboard
+vendor.oplus.hardware.pogo_keyboard.IPogoKeyboard/default   u:object_r:hal_pogo_keyboard_aidl_service:s0
+
 # Project
 vendor.oplus.hardware.stability.oplus_project.IOplusProject/default    u:object_r:hal_oplus_project_aidl_service:s0
 

@@ -12,6 +12,9 @@ type oplus_consumer_ir_device, dev_type;
 # NVRAM
 type nvram_device, dev_type;
 
+# Pogo keyboard
+type pogo_keyboard_device, dev_type;
+
 # Reserve
 type vendor_reserve_partition, dev_type;
 

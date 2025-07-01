@@ -1,0 +1,9 @@
+type hal_pogo_keyboard_aidl, domain;
+binder_use(hal_pogo_keyboard_aidl)
+
+type hal_pogo_keyboard_aidl_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(hal_pogo_keyboard_aidl)
+
+add_service(hal_pogo_keyboard_aidl, hal_pogo_keyboard_aidl_service)
+
+rw_dir_file(hal_pogo_keyboard_aidl, pogo_keyboard_device)
