@@ -208,3 +208,33 @@ aidl_interface {
         },
     ],
 }
+
+aidl_interface {
+    name: "vendor.oplus.hardware.urcc",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/urcc/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        ndk: {
+            gen_log: true,
+        },
+        java: {
+            sdk_version: "module_current",
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+
+    ],
+    frozen: true,
+}
