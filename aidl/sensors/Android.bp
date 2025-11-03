@@ -24,11 +24,13 @@ cc_binary {
     vendor: true,
     relative_install_path: "hw",
     srcs: [
-        "AlsCorrection.cpp",
         "service.cpp",
         "HalProxy.cpp",
         "HalProxyCallback.cpp",
-    ],
+    ] + select(soong_config_variable("oplus_sensors", "uses_nextgen_fusion_sensor"), {
+        "true": ["AlsCorrection_fusion_ng.cpp"],
+        default: ["AlsCorrection.cpp"],
+    }),
     header_libs: [
         "android.hardware.sensors@2.X-multihal.header",
         "android.hardware.sensors@2.X-shared-utils",
@@ -50,7 +52,10 @@ cc_binary {
         "libbinder_ndk",
         "libhidlbase",
         "vendor.lineage.oplus_als-V1-ndk",
-    ],
+    ] + select(soong_config_variable("oplus_sensors", "uses_nextgen_fusion_sensor"), {
+        "true": ["libjsoncpp"],
+        default: [],
+    }),
     static_libs: [
         "libaidlcommonsupport",
         "android.hardware.sensors@1.0-convert",

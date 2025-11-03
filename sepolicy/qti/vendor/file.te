@@ -57,6 +57,7 @@ type vendor_proc_eng_cali_file, fs_type, proc_type;
 type vendor_proc_oplus_als_file, fs_type, proc_type;
 type vendor_sysfs_sensor_fb, fs_type, sysfs_type;
 type vendor_sysfs_sensor_tap, fs_type, sysfs_type;
+type vendor_fusionlight_file, file_type, vendor_file_type;
 
 # TOF
 type vendor_sysfs_tof, fs_type, sysfs_type;
