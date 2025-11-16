@@ -21,20 +21,9 @@
 // later when a module using the interface is updated, e.g., Mainline modules.
 
 package vendor.oplus.hardware.olc2;
-@VintfStability
-interface IOplusLogCore {
-  int enableExceptionMonitor(boolean enabled);
-  int olcRaiseException(in vendor.oplus.hardware.olc2.ExceptionInfo exceptionInfo);
-  int pullDroppedExceptions();
-  int registerEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  int unregisterEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  boolean doShell(String command);
-  boolean doShellBlocking(String command);
-  ParcelFileDescriptor getFileDescriptor(String path, int flags);
-  vendor.oplus.hardware.olc2.FileInfo getFileInfo(String path);
-  List<vendor.oplus.hardware.olc2.FileInfo> getFileInfoList(String path, boolean recursive);
-  boolean removePath(String path);
-  void registerGaiaEventListener(vendor.oplus.hardware.olc2.IGaiaEventListener listener);
-  void unregisterGaiaEventListener(vendor.oplus.hardware.olc2.IGaiaEventListener listener);
-  void sendGaiaEvent(in byte[] event);
+@Backing(type="int") @VintfStability
+enum StatusCode {
+  SUCCESS = 0,
+  FAILURE_UNKNOWN = 1,
+  FAILURE_ARGS_INVALID = 2,
 }

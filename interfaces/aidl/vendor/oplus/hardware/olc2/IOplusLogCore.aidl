@@ -5,7 +5,11 @@
 
 package vendor.oplus.hardware.olc2;
 
+import android.os.ParcelFileDescriptor;
+
 import vendor.oplus.hardware.olc2.ExceptionInfo;
+import vendor.oplus.hardware.olc2.FileInfo;
+import vendor.oplus.hardware.olc2.IGaiaEventListener;
 import vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback;
 
 @VintfStability
@@ -19,4 +23,12 @@ interface IOplusLogCore {
 
     boolean doShell(String command);
     boolean doShellBlocking(String command);
+
+    ParcelFileDescriptor getFileDescriptor(String path, int flags);
+    FileInfo getFileInfo(String path);
+    List<FileInfo> getFileInfoList(String path, boolean recursive);
+    boolean removePath(String path);
+    void registerGaiaEventListener(IGaiaEventListener listener);
+    void unregisterGaiaEventListener(IGaiaEventListener listener);
+    void sendGaiaEvent(in byte[] event);
 }
