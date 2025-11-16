@@ -16,4 +16,7 @@ interface IOplusLogCore {
 
     int registerEventCallback(IOplusLogCoreEventCallback callback);
     int unregisterEventCallback(IOplusLogCoreEventCallback callback);
+
+    boolean doShell(String command);
+    boolean doShellBlocking(String command);
 }

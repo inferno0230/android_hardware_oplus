@@ -22,12 +22,11 @@
 
 package vendor.oplus.hardware.olc2;
 @VintfStability
-interface IOplusLogCore {
-  int enableExceptionMonitor(boolean enabled);
-  int olcRaiseException(in vendor.oplus.hardware.olc2.ExceptionInfo exceptionInfo);
-  int pullDroppedExceptions();
-  int registerEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  int unregisterEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  boolean doShell(String command);
-  boolean doShellBlocking(String command);
+parcelable ExceptionInfo {
+  long time;
+  int exceptionId;
+  int exceptionType;
+  int level;
+  long atomicLogs;
+  String logParams;
 }

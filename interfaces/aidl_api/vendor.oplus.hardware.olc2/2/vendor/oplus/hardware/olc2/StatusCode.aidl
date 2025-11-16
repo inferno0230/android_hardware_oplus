@@ -21,13 +21,9 @@
 // later when a module using the interface is updated, e.g., Mainline modules.
 
 package vendor.oplus.hardware.olc2;
-@VintfStability
-interface IOplusLogCore {
-  int enableExceptionMonitor(boolean enabled);
-  int olcRaiseException(in vendor.oplus.hardware.olc2.ExceptionInfo exceptionInfo);
-  int pullDroppedExceptions();
-  int registerEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  int unregisterEventCallback(vendor.oplus.hardware.olc2.IOplusLogCoreEventCallback callback);
-  boolean doShell(String command);
-  boolean doShellBlocking(String command);
+@Backing(type="int") @VintfStability
+enum StatusCode {
+  SUCCESS = 0,
+  FAILURE_UNKNOWN = 1,
+  FAILURE_ARGS_INVALID = 2,
 }
