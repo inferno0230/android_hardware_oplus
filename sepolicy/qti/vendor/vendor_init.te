@@ -7,6 +7,7 @@ allow vendor_init system_dlkm_file:system module_load;
 set_prop(vendor_init, system_oplus_project_prop)
 set_prop(vendor_init, vendor_camera_prop)
 set_prop(vendor_init, vendor_fingerprint_prop)
+set_prop(vendor_init, vendor_oplus_thermal_prop)
 set_prop(vendor_init, vendor_oplus_touch_prop)
 set_prop(vendor_init, vendor_sensors_als_prop)
 set_prop(vendor_init, vendor_thermal_engine_prop)

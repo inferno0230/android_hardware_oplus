@@ -11,3 +11,5 @@ allow vendor_qti_init_shell bt_firmware_file:dir r_file_perms;
 allow vendor_qti_init_shell vendor_qmcs_file:dir r_file_perms;
 
 create_dir_file(vendor_qti_init_shell, mnt_vendor_file)
+
+set_prop(vendor_qti_init_shell, vendor_oplus_thermal_prop)

@@ -14,6 +14,7 @@ vendor_internal_prop(vendor_modem_prop)
 vendor_internal_prop(vendor_nw_exported_system_prop)
 
 # Thermal
+vendor_internal_prop(vendor_oplus_thermal_prop)
 vendor_internal_prop(vendor_thermal_engine_prop)
 
 # Touch
