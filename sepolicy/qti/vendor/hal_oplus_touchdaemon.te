@@ -3,7 +3,6 @@ binder_use(hal_oplus_touchdaemon)
 vndbinder_use(hal_oplus_touchdaemon)
 
 hal_server_domain(hal_oplus_touchdaemon, vendor_hal_oplus_touchdaemon)
-binder_call(hal_oplus_touchdaemon, system_server)
 
 type hal_oplus_touchdaemon_exec, file_type, exec_type, vendor_file_type;
 init_daemon_domain(hal_oplus_touchdaemon)
@@ -11,9 +10,6 @@ init_daemon_domain(hal_oplus_touchdaemon)
 hal_attribute_service(vendor_hal_oplus_touchdaemon, touchDeamonBinder_service)
 
 allow hal_oplus_touchdaemon hal_oplus_touchdaemon:capability sys_nice;
-
-allow hal_oplus_touchdaemon hal_oplus_touch_aidl:binder call;
-allow hal_oplus_touchdaemon hal_oplus_touch_aidl_service:binder call;
 
 allow hal_oplus_touchdaemon input_device:dir search;
 allow hal_oplus_touchdaemon input_device:chr_file rw_file_perms;
@@ -32,3 +28,4 @@ rw_dir_file(hal_oplus_touchdaemon, proc_horae)
 
 set_prop(hal_oplus_touchdaemon, system_oplus_touch_prop)
 set_prop(hal_oplus_touchdaemon, vendor_oplus_touch_prop)
+binder_call(hal_oplus_touchdaemon, hal_oplus_touch_aidl)
