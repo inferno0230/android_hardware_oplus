@@ -15,5 +15,6 @@
 | OPLUS_LINEAGE_TOUCH_HAL | INCLUDE_DIR | Device specific include dir path | |
 | OPLUS_LINEAGE_TOUCH_HAL | USE_OPLUSTOUCH | Use and interface with stock OplusTouch | false |
 | OPLUS_LINEAGE_VIBRATOR_HAL | INCLUDE_DIR | Device specific include dir path | |
+| OPLUS_LINEAGE_VIBRATOR_HAL | OVERRIDE_EFFECTS | Enable device-provided `VibratorEffectsOverride.h` remaps for Richtap effects | false |
 | OPLUS_LINEAGE_VIBRATOR_HAL | USE_EFFECT_STREAM | Enable effect stream feature | false |
 | OPLUS_LINEAGE_VIBRATOR_HAL | USES_OPLUS_AWINIC | Enable Oplus Awinic sysfs-backed vibrator path | false |
