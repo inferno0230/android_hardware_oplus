@@ -9,6 +9,13 @@
 #include <inttypes.h>
 #include <log/log.h>
 
+#ifdef USES_OPLUS_AWINIC
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+
+#include <string>
+#endif
 #include <thread>
 
 #include "aac_vibra_function.h"
@@ -17,13 +24,95 @@
 #define RICHTAP_MEDIUM_STRENGTH 89
 #define RICHTAP_STRONG_STRENGTH 99
 
+#ifdef USES_OPLUS_AWINIC
+#define RICHTAP_OPLUS_ACTIVATE_NODE "/sys/class/leds/vibrator/oplus_activate"
+#define RICHTAP_OPLUS_DURATION_NODE "/sys/class/leds/vibrator/oplus_duration"
+#define RICHTAP_OPLUS_STATE_NODE "/sys/class/leds/vibrator/oplus_state"
+#endif
+
 namespace aidl {
 namespace android {
 namespace hardware {
 namespace vibrator {
 
+#ifdef USES_OPLUS_AWINIC
+static int writeValue(const char* path, const char* value) {
+    int fd = TEMP_FAILURE_RETRY(open(path, O_WRONLY | O_CLOEXEC));
+    if (fd < 0) {
+        int savedErrno = errno;
+        ALOGE("open %s failed, errno = %d", path, savedErrno);
+        return -savedErrno;
+    }
+
+    size_t len = strlen(value);
+    ssize_t ret = TEMP_FAILURE_RETRY(write(fd, value, len));
+    int status;
+
+    if (ret < 0) {
+        status = -errno;
+    } else if (static_cast<size_t>(ret) != len) {
+        status = -EAGAIN;
+    } else {
+        status = 0;
+    }
+
+    close(fd);
+    return status;
+}
+
+static int writeValue(const char* path, int value) {
+    std::string strValue = std::to_string(value);
+    return writeValue(path, strValue.c_str());
+}
+
+static int writeNode(const char* path, const char* value) {
+    if (access(path, F_OK) != 0) {
+        return -ENOENT;
+    }
+
+    return writeValue(path, value);
+}
+
+static int writeNode(const char* path, int value) {
+    if (access(path, F_OK) != 0) {
+        return -ENOENT;
+    }
+
+    return writeValue(path, value);
+}
+
+static bool hasSysfsOnOffSupport() {
+    return access(RICHTAP_OPLUS_ACTIVATE_NODE, F_OK) == 0;
+}
+
+static int sysfsOn(int32_t timeoutMs) {
+    int ret = writeNode(RICHTAP_OPLUS_STATE_NODE, "1");
+    if (ret) {
+        return ret;
+    }
+
+    ret = writeNode(RICHTAP_OPLUS_DURATION_NODE, timeoutMs);
+    if (ret) {
+        return ret;
+    }
+
+    return writeNode(RICHTAP_OPLUS_ACTIVATE_NODE, "1");
+}
+
+static int sysfsOff() {
+    return writeNode(RICHTAP_OPLUS_ACTIVATE_NODE, "0");
+}
+#endif
+
 Vibrator::Vibrator() {
     uint32_t deviceType = 0;
+
+#ifdef USES_OPLUS_AWINIC
+    mUseSysfsOnOff = hasSysfsOnOffSupport();
+    if (mUseSysfsOnOff) {
+        ALOGI("Using sysfs backend for on/off");
+    }
+#endif
 
     int32_t ret = aac_vibra_init(&deviceType);
     if (ret) {
@@ -39,11 +128,33 @@ Vibrator::Vibrator() {
 ndk::ScopedAStatus Vibrator::getCapabilities(int32_t* _aidl_return) {
     *_aidl_return = IVibrator::CAP_ON_CALLBACK | IVibrator::CAP_PERFORM_CALLBACK |
                     IVibrator::CAP_AMPLITUDE_CONTROL;
+#ifdef USES_OPLUS_AWINIC
+    if (mUseSysfsOnOff) {
+        *_aidl_return &= ~IVibrator::CAP_AMPLITUDE_CONTROL;
+    }
+#endif
 
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus Vibrator::off() {
+#ifdef USES_OPLUS_AWINIC
+    if (mUseSysfsOnOff) {
+        int ret = sysfsOff();
+        if (ret) {
+            ALOGE("Sysfs off failed: %d\n", ret);
+            return ndk::ScopedAStatus(AStatus_fromExceptionCode(EX_SERVICE_SPECIFIC));
+        }
+
+        int32_t aacRet = aac_vibra_off();
+        if (aacRet) {
+            ALOGW("AAC off failed after sysfs off: %d\n", aacRet);
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
+#endif
+
     int32_t ret = aac_vibra_off();
     if (ret) {
         ALOGE("AAC off failed: %d\n", ret);
@@ -55,6 +166,29 @@ ndk::ScopedAStatus Vibrator::off() {
 
 ndk::ScopedAStatus Vibrator::on(int32_t timeoutMs,
                                 const std::shared_ptr<IVibratorCallback>& callback) {
+#ifdef USES_OPLUS_AWINIC
+    if (mUseSysfsOnOff) {
+        if (timeoutMs <= 0) {
+            return ndk::ScopedAStatus::ok();
+        }
+
+        int ret = sysfsOn(timeoutMs);
+        if (ret) {
+            ALOGE("Sysfs on failed: %d\n", ret);
+            return ndk::ScopedAStatus(AStatus_fromExceptionCode(EX_SERVICE_SPECIFIC));
+        }
+
+        if (callback != nullptr) {
+            std::thread([=] {
+                usleep(timeoutMs * 1000);
+                callback->onComplete();
+            }).detach();
+        }
+
+        return ndk::ScopedAStatus::ok();
+    }
+#endif
+
     int32_t ret = aac_vibra_looper_on(timeoutMs);
     if (ret < 0) {
         ALOGE("AAC on failed: %d\n", ret);
@@ -119,6 +253,12 @@ ndk::ScopedAStatus Vibrator::getSupportedEffects(std::vector<Effect>* _aidl_retu
 }
 
 ndk::ScopedAStatus Vibrator::setAmplitude(float amplitude) {
+#ifdef USES_OPLUS_AWINIC
+    if (mUseSysfsOnOff) {
+        return ndk::ScopedAStatus(AStatus_fromExceptionCode(EX_UNSUPPORTED_OPERATION));
+    }
+#endif
+
     uint8_t tmp = (uint8_t)(amplitude * 0xff);
 
     int32_t ret = aac_vibra_setAmplitude(tmp);
