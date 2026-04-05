@@ -8,6 +8,8 @@ genfscon sysfs /class/oplus_mutual/cmd                                    u:obje
 genfscon sysfs /devices/platform/soc/1c40000.qcom,spmi/spmi-0/spmi0-02/1c40000.qcom,spmi:qcom,pm7250b@2:qcom,qpnp-smb5/power_supply/ac    u:object_r:vendor_sysfs_battery_supply:s0
 genfscon sysfs /devices/platform/soc/4c90000.i2c/i2c-1/1-006b/iio:device                                                                  u:object_r:vendor_sysfs_battery_supply:s0
 genfscon sysfs /devices/platform/soc/4c90000.i2c/i2c-1/1-006b/power_supply/parallel                                                       u:object_r:vendor_sysfs_battery_supply:s0
+genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_0_geni_se/a8c000.i2c/i2c-6/6-005a/leds/vibrator    u:object_r:vendor_sysfs_vibrator:s0
+genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-6/6-005a/leds/vibrator    u:object_r:vendor_sysfs_vibrator:s0
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm7250b@2:qcom,qpnp-smb5/power_supply/ac    u:object_r:vendor_sysfs_battery_supply:s0
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm8150b@2:qcom,qpnp-smb5/power_supply/ac    u:object_r:vendor_sysfs_battery_supply:s0
 genfscon sysfs /devices/platform/soc/soc:discrete_charger/power_supply    u:object_r:vendor_sysfs_battery_supply:s0
