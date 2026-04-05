@@ -20,6 +20,10 @@
 
 #include "aac_vibra_function.h"
 
+#ifdef OVERRIDE_EFFECTS
+#include "VibratorEffectsOverride.h"
+#endif
+
 #define RICHTAP_LIGHT_STRENGTH 69
 #define RICHTAP_MEDIUM_STRENGTH 89
 #define RICHTAP_STRONG_STRENGTH 99
@@ -209,6 +213,10 @@ ndk::ScopedAStatus Vibrator::perform(Effect effect, EffectStrength es,
                                      const std::shared_ptr<IVibratorCallback>& callback,
                                      int32_t* _aidl_return) {
     int32_t strength;
+
+#ifdef OVERRIDE_EFFECTS
+    effect = overrideVibratorEffect(effect);
+#endif
 
     if (effect < Effect::CLICK || effect > Effect::HEAVY_CLICK)
         return ndk::ScopedAStatus(AStatus_fromExceptionCode(EX_UNSUPPORTED_OPERATION));
