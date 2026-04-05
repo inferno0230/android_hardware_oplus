@@ -10,7 +10,10 @@ cc_binary {
         "-Wall",
         "-Werror",
         "-DLOG_TAG=\"android.hardware.vibrator.service.oplus\"",
-    ] + select(soong_config_variable("OPLUS_LINEAGE_VIBRATOR_HAL", "USES_OPLUS_AWINIC"), {
+    ] + select(soong_config_variable("OPLUS_LINEAGE_VIBRATOR_HAL", "OVERRIDE_EFFECTS"), {
+        true: ["-DOVERRIDE_EFFECTS"],
+        default: [],
+    }) + select(soong_config_variable("OPLUS_LINEAGE_VIBRATOR_HAL", "USES_OPLUS_AWINIC"), {
         true: ["-DUSES_OPLUS_AWINIC"],
         default: [],
     }),
@@ -32,6 +35,10 @@ cc_binary {
         "libaacvibrator",
         "android.hardware.vibrator-V2-ndk",
     ],
+    include_dirs: select(soong_config_variable("OPLUS_LINEAGE_VIBRATOR_HAL", "INCLUDE_DIR"), {
+        any @ flag_val: [flag_val],
+        default: [],
+    }),
 }
 
 cc_library_shared {
