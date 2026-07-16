@@ -304,6 +304,30 @@ aidl_interface {
 }
 
 aidl_interface {
+    name: "vendor.oplus.hardware.displaycolorfeature",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/displaycolorfeature/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
     name: "vendor.oplus.hardware.ims",
     system_ext_specific: true,
     vendor_available: true,
