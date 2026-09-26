@@ -1,0 +1,5 @@
+on property:sys.boot_completed=1
+    chown system system /sys/class/oplus_chg/usb/otg_switch
+    chown system system /sys/kernel/oplus_display/test_te
+    chown system system /sys/kernel/oplus_display/ltpo_enable
+    write /sys/kernel/oplus_display/test_te 1

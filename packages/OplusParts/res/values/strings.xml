@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+
+    <!-- Bypass charging -->
+    <string name="bypass_charging_title">Bypass charging</string>
+    <string name="bypass_charging_summary">Power the device directly while plugged in and avoid charging the battery. Enabling this will disable Lineage charging control.</string>
+    <string name="bypass_charging_not_supported">Bypass charging is not supported on this device</string>
+    <string name="bypass_charging_tile_title">Bypass Charging</string>
+    <string name="force_otg_tile_title">OTG</string>
+    <string name="force_otg_summary">Forcefully enable OTG in case auto detection fails</string>
+    <string name="force_otg_not_supported">Force OTG is not supported on this device</string>
+    <string name="ltpo_title">Enable LTPO</string>
+    <string name="ltpo_tile_title">LTPO</string>
+    <string name="ltpo_summary">(Experimental) Allow display to go below the default 60hz</string>
+    <string name="ltpo_not_supported">LTPO control is not supported on this device</string>
+
+</resources>
