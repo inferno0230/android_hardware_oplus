@@ -1,0 +1,28 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_library_shared {
+    name: "libOplusSpatializerWrapper",
+    srcs: ["SpatializerWrapper.cpp"],
+    shared_libs: [
+        "libdl",
+        "liblog",
+    ],
+    header_libs: [
+        "libaudioeffects",
+        "libhardware_headers",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-fvisibility=hidden",
+        "-DLOG_TAG=\"libOplusSpatializerWrapper\"",
+    ] + select(soong_config_variable("OPLUS_SPATIALIZER_WRAPPER", "BACKEND_LIB_NAME"), {
+        any @ flag_val: ["-DBACKEND_LIB_NAME=\"" + flag_val + "\""],
+        default: [],
+    }),
+    relative_install_path: "soundfx",
+    vendor: true,
+}
