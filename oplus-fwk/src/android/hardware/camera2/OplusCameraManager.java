@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.IOplusCameraManager;
 import android.hardware.camera2.impl.CameraMetadataNative;
+import android.hardware.camera2.marshal.MarshalRegistry;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Binder;
@@ -16,6 +17,8 @@ import android.util.Log;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /* loaded from: classes.dex */
 public final class OplusCameraManager implements IOplusCameraManager {
@@ -181,7 +184,6 @@ public final class OplusCameraManager implements IOplusCameraManager {
         if (context == null) {
             throw new IllegalArgumentException("context was null");
         }
-        context.enforceCallingOrSelfPermission(PERMISSION_SAFE_CAMERA, TAG);
         try {
             OplusCameraManagerGlobal.get().sendOplusExtCamCmd(context.getOpPackageName(), cmd, param);
         } catch (CameraAccessException e) {
@@ -391,6 +393,31 @@ public final class OplusCameraManager implements IOplusCameraManager {
             e.printStackTrace();
         } catch (RemoteException e2) {
             e2.printStackTrace();
+        }
+    }
+
+    public static <T> T metaDataValueConvert(CaptureResult.Key<T> key, int i, byte[] bArr) {
+        final String TAG = "OplusCameraManager";
+        try {
+            T result = (T) MarshalRegistry.getMarshaler(key.getNativeKey().getTypeReference(), i)
+                    .unmarshal(ByteBuffer.wrap(bArr).order(ByteOrder.nativeOrder()));
+            android.util.Log.d(TAG, "metaDataValueConvert OK");
+            return result;
+        } catch (Throwable t) {
+            android.util.Log.e(TAG, "metaDataValueConvert FAIL");
+            throw t; // rethrow the original exception
+        }
+    }
+
+    public static int getMetadataTag(CaptureResult.Key key) {
+        final String TAG = "OplusCameraManager";
+        try {
+            int tag = key.getNativeKey().getTag();
+            android.util.Log.d(TAG, "getMetadataTag OK");
+            return tag;
+        } catch (Throwable t) {
+            android.util.Log.e(TAG, "getMetadataTag FAIL");
+            throw t;
         }
     }
 

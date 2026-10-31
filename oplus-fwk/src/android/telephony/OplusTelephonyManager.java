@@ -22,4 +22,8 @@ public class OplusTelephonyManager {
     public String getImsType(int slotId) {
         return null;
     }
+
+    public int setVsimId(int vsimId) {
+        return -1;
+    }
 }

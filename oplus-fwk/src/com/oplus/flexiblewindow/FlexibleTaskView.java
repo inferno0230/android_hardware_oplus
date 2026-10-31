@@ -1,5 +1,7 @@
 package com.oplus.flexiblewindow;
 
+import java.util.concurrent.Executor;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
@@ -35,4 +37,10 @@ public class FlexibleTaskView extends SurfaceView {
         default void onBackPressedOnTaskRoot(int taskId) {}
         default void updateTouchRegion(Region region) {}
     }
+
+    public void setListener(Executor executor, Listener listener) {}
+
+    public void resize(Rect rect) {}
+
+    public void release() {}
 }

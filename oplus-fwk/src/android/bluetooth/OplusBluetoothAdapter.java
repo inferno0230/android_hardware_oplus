@@ -10,4 +10,8 @@ public class OplusBluetoothAdapter {
         }
         return sAdapter;
     }
+
+    public int getBluetoothConnectionCount() {
+        return 0;
+    }
 }

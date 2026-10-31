@@ -1,5 +1,9 @@
 package com.oplus.app;
 
+import java.util.Map;
+
+import java.util.HashMap;
+
 import android.os.UserHandle;
 
 public class OPlusAccessControlManager {
@@ -21,5 +25,21 @@ public class OPlusAccessControlManager {
 
     public boolean isEncryptedPackage(String packageName, int userId) {
         return true;
+    }
+
+    public boolean getAccessControlEnabled(String packageName, int userId) {
+        return false;
+    }
+
+    public boolean getApplicationAccessControlEnabledAsUser(String packageName, int userId) {
+        return false;
+    }
+
+    public Map<String, Integer> getAccessControlAppsInfo(String type, int userId) {
+        return new HashMap<>();
+    }
+
+    public Map<String, Integer> getPrivacyAppInfo(int userId) {
+        return new HashMap<>();
     }
 }
