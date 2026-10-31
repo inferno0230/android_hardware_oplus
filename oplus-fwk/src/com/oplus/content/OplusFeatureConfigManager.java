@@ -1,29 +1,65 @@
-/*
- * Copyright (C) 2024 The LineageOS Project
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.oplus.content;
 
+import android.os.SystemProperties;
 import android.text.TextUtils;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class OplusFeatureConfigManager {
-    public static OplusFeatureConfigManager sInstance = null;
+
+    public static OplusFeatureConfigManager sOplusFeatureConfigManager = null;
+
+    public final List<OnFeatureActionObserver> observers = new CopyOnWriteArrayList<>();
 
     public static OplusFeatureConfigManager getInstance() {
-        if (sInstance == null) {
-            sInstance = new OplusFeatureConfigManager();
+        if (sOplusFeatureConfigManager == null) {
+            sOplusFeatureConfigManager = new OplusFeatureConfigManager();
         }
-        return sInstance;
+        return sOplusFeatureConfigManager;
     }
 
-    public boolean hasFeature(String featureName) {
+    public boolean hasFeature(String name) {
+        if ("oplus.software.vibrator_lmvibrator".equals(name)) {
+            // OnePlus 7/8 series use old OnePlus base camera. Don't let this feature break haptic feedback.
+            if (useOnePlusBaseCamera()) {
+                return false;
+            }
+            return true;
+        }
+        if ("oplus.software.vibrator_luxunvibrator".equals(name)) {
+            // COUI seekbar / number-picker haptics go through com.oplus.os.LinearmotorVibrator,
+            // which oplus-fwk now backs with the AOSP vibrator. Enable so sliders feel stock.
+            return true;
+        }
         return false;
+    }
+
+    private static boolean useOnePlusBaseCamera() {
+        return !TextUtils.isEmpty(SystemProperties.get("ro.oplus.version.base"));
+    }
+
+    public boolean registerFeatureActionObserver(OnFeatureActionObserver observer) {
+        if (observer != null) {
+            observers.add(observer);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unregisterFeatureActionObserver(OnFeatureActionObserver observer) {
+        return observers.remove(observer);
     }
 
     public interface OnFeatureObserver {
         default void onFeatureUpdate(List<String> features) {}
+    }
+
+    public interface OnFeatureActionObserver {
+        default void onFeaturesActionUpdate(String action, String actionValue, int featureID) {}
+    }
+
+    public interface OnFeatureMapObserver {
+        default void onFeatureUpdate(List<String> list, int featureID) {}
     }
 }
