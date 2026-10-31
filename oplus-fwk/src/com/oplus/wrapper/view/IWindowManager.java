@@ -5,82 +5,118 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.RemoteException;
 import android.view.IRotationWatcher;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
+/* loaded from: classes.dex */
 public interface IWindowManager {
+    int getBaseDisplayDensity(int i) throws RemoteException;
+
+    void getBaseDisplaySize(int i, Point point) throws RemoteException;
 
     int getDockedStackSide() throws RemoteException;
-    int getInitialDisplayDensity(int displayId) throws RemoteException;
-    boolean hasNavigationBar(int displayId) throws RemoteException;
-    int watchRotation(IRotationWatcher watcher, int displayId) throws RemoteException;
-    void removeRotationWatcher(IRotationWatcher watcher) throws RemoteException;
-    void setForcedDisplayDensityForUser(int displayId, int density, int userId) throws RemoteException;
-    int getBaseDisplayDensity(int displayId) throws RemoteException;
-    void getBaseDisplaySize(int displayId, Point size) throws RemoteException;
 
-    public static abstract class Stub implements IInterface, android.view.IWindowManager {
+    int getInitialDisplayDensity(int i) throws RemoteException;
+
+    boolean hasNavigationBar(int i) throws RemoteException;
+
+    void removeRotationWatcher(IRotationWatcher iRotationWatcher) throws RemoteException;
+
+    void setForcedDisplayDensityForUser(int i, int i2, int i3) throws RemoteException;
+
+    int watchRotation(IRotationWatcher iRotationWatcher, int i) throws RemoteException;
+
+    /* loaded from: classes.dex */
+    public static abstract class Stub implements android.os.IInterface, android.view.IWindowManager {
 
         private final android.view.IWindowManager mIWindowManager;
 
         public Stub(android.view.IWindowManager windowManager) {
-            mIWindowManager = windowManager;
+            this.mIWindowManager = windowManager;
         }
 
         public static IWindowManager asInterface(IBinder obj) {
             return new Proxy(android.view.IWindowManager.Stub.asInterface(obj));
         }
 
-        @Override
+        @Override // android.os.IInterface
         public IBinder asBinder() {
-            return mIWindowManager.asBinder();
+            return this.mIWindowManager.asBinder();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
+        /* loaded from: classes.dex */
         public static class Proxy implements IWindowManager {
-
+            private static Map<IRotationWatcher, android.view.IRotationWatcher> sRotationWatcherMap = new ConcurrentHashMap();
             private final android.view.IWindowManager mIWindowManager;
 
-            Proxy(android.view.IWindowManager windowManager) {
-                mIWindowManager = windowManager;
+            Proxy(android.view.IWindowManager iWindowManager) {
+                this.mIWindowManager = iWindowManager;
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public int getDockedStackSide() throws RemoteException {
-                return mIWindowManager.getDockedStackSide();
+                return this.mIWindowManager.getDockedStackSide();
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public int getInitialDisplayDensity(int displayId) throws RemoteException {
-                return mIWindowManager.getInitialDisplayDensity(displayId);
+                return this.mIWindowManager.getInitialDisplayDensity(displayId);
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public boolean hasNavigationBar(int displayId) throws RemoteException {
-                return mIWindowManager.hasNavigationBar(displayId);
+                return this.mIWindowManager.hasNavigationBar(displayId);
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public int watchRotation(IRotationWatcher watcher, int displayId) throws RemoteException {
-                return mIWindowManager.watchRotation(watcher, displayId);
+                android.view.IRotationWatcher rotationWatcher = sRotationWatcherMap.computeIfAbsent(watcher, new Function() { // from class: com.oplus.wrapper.view.IWindowManager$Stub$Proxy$$ExternalSyntheticLambda0
+                    @Override // java.util.function.Function
+                    public final Object apply(Object obj) {
+                        android.view.IRotationWatcher lambda$watchRotation$0;
+                        lambda$watchRotation$0 = IWindowManager.Stub.Proxy.this.lambda$watchRotation$0((IRotationWatcher) obj);
+                        return lambda$watchRotation$0;
+                    }
+                });
+                return this.mIWindowManager.watchRotation(rotationWatcher, displayId);
             }
 
-            @Override
+            /* JADX INFO: Access modifiers changed from: private */
+            public /* synthetic */ android.view.IRotationWatcher lambda$watchRotation$0(final IRotationWatcher observer) {
+                return new IRotationWatcher.Stub() { // from class: com.oplus.wrapper.view.IWindowManager.Stub.Proxy.1
+                    public void onRotationChanged(int rotation) throws RemoteException {
+                        observer.onRotationChanged(rotation);
+                    }
+                };
+            }
+
+            @Override // com.oplus.wrapper.view.IWindowManager
             public void removeRotationWatcher(IRotationWatcher watcher) throws RemoteException {
-                mIWindowManager.removeRotationWatcher(watcher);
+                android.view.IRotationWatcher rotationWatcher = sRotationWatcherMap.get(watcher);
+                if (rotationWatcher == null) {
+                    return;
+                }
+                sRotationWatcherMap.remove(watcher);
+                this.mIWindowManager.removeRotationWatcher(rotationWatcher);
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public void setForcedDisplayDensityForUser(int displayId, int density, int userId) throws RemoteException {
-                mIWindowManager.setForcedDisplayDensityForUser(displayId, density, userId);
+                this.mIWindowManager.setForcedDisplayDensityForUser(displayId, density, userId);
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public int getBaseDisplayDensity(int displayId) throws RemoteException {
-                return mIWindowManager.getBaseDisplayDensity(displayId);
+                return this.mIWindowManager.getBaseDisplayDensity(displayId);
             }
 
-            @Override
+            @Override // com.oplus.wrapper.view.IWindowManager
             public void getBaseDisplaySize(int displayId, Point size) throws RemoteException {
-                mIWindowManager.getBaseDisplaySize(displayId, size);
+                this.mIWindowManager.getBaseDisplaySize(displayId, size);
             }
         }
     }
 }
+
