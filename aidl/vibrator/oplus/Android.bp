@@ -21,6 +21,7 @@ cc_binary {
         "FfBackend.cpp",
         "JsonEffectSource.cpp",
         "MotorInfo.cpp",
+        "RichtapBackend.cpp",
         "Vibrator.cpp",
         "service.cpp",
     ],

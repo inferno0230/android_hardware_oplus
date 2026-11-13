@@ -8,11 +8,13 @@
 #include <android/binder_process.h>
 
 #include "FfBackend.h"
+#include "RichtapBackend.h"
 #include "Vibrator.h"
 
 using aidl::android::hardware::vibrator::Backend;
 using aidl::android::hardware::vibrator::FfBackend;
 using aidl::android::hardware::vibrator::NullBackend;
+using aidl::android::hardware::vibrator::RichtapBackend;
 using aidl::android::hardware::vibrator::Vibrator;
 
 namespace {
@@ -20,6 +22,9 @@ namespace {
 // Devices differ in their haptics, not in this binary: find out what this one has.
 std::unique_ptr<Backend> createBackend() {
     if (auto backend = FfBackend::probe()) {
+        return backend;
+    }
+    if (auto backend = RichtapBackend::probe()) {
         return backend;
     }
 
