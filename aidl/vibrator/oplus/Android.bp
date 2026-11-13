@@ -1,0 +1,33 @@
+//
+// SPDX-FileCopyrightText: 2026 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_binary {
+    name: "android.hardware.vibrator-service.oplus",
+    vendor: true,
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.vibrator-service.oplus.rc"],
+    vintf_fragments: ["android.hardware.vibrator-service.oplus.xml"],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DLOG_TAG=\"android.hardware.vibrator-service.oplus\"",
+    ],
+    srcs: [
+        "CallbackScheduler.cpp",
+        "EffectSource.cpp",
+        "FfBackend.cpp",
+        "JsonEffectSource.cpp",
+        "MotorInfo.cpp",
+        "Vibrator.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "android.hardware.vibrator-V2-ndk",
+        "libbase",
+        "libbinder_ndk",
+        "libjsoncpp",
+        "liblog",
+    ],
+}
