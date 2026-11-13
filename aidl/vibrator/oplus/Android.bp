@@ -15,6 +15,7 @@ cc_binary {
         "-DLOG_TAG=\"android.hardware.vibrator-service.oplus\"",
     ],
     srcs: [
+        "BlobEffectSource.cpp",
         "CallbackScheduler.cpp",
         "EffectSource.cpp",
         "FfBackend.cpp",

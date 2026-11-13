@@ -33,6 +33,8 @@ class EffectSource {
 
 // From /odm/etc/vibrator/vibrator_effect.json and the waveform files it points at.
 std::unique_ptr<EffectSource> createJsonEffectSource(const MotorInfo& motor);
+// From the tables compiled into the stock libqtivibratoreffect.so.
+std::unique_ptr<EffectSource> createBlobEffectSource(const MotorInfo& motor);
 
 }  // namespace vibrator
 }  // namespace hardware

@@ -14,6 +14,9 @@ namespace vibrator {
 
 std::unique_ptr<EffectSource> EffectSource::create(const MotorInfo& motor) {
     auto source = createJsonEffectSource(motor);
+    if (!source) {
+        source = createBlobEffectSource(motor);
+    }
 
     if (source) {
         LOG(INFO) << "Effect source: " << source->description();
