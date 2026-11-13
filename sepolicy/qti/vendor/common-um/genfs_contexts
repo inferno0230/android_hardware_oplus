@@ -1,0 +1,2 @@
+# Vibrator
+genfscon sysfs /class/qcom-haptics/vibrator_type    u:object_r:vendor_sysfs_haptics:s0
