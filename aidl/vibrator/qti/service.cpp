@@ -39,6 +39,8 @@ using aidl::android::hardware::vibrator::Vibrator;
 
 int main() {
     ABinderProcess_setThreadPoolMaxThreadCount(0);
+    ABinderProcess_startThreadPool();
+
     std::shared_ptr<Vibrator> vib = ndk::SharedRefBase::make<Vibrator>();
 
     const std::string instance = std::string() + Vibrator::descriptor + "/default";

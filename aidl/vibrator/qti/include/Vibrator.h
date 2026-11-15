@@ -25,11 +25,19 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
+ * Copyright (c) 2022-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
 #pragma once
 
 #include <aidl/android/hardware/vibrator/BnVibrator.h>
+#include <array>
+#include <atomic>
+#include <mutex>
+#include <thread>
 
 namespace aidl {
 namespace android {
@@ -40,9 +48,11 @@ class InputFFDevice {
   public:
     InputFFDevice();
     int playEffect(int effectId, EffectStrength es, long* playLengthMs);
+    int playPrimitive(int primitiveId, float amplitude, long* playLengthMs);
     int on(int32_t timeoutMs);
     int off();
     int setAmplitude(uint8_t amplitude);
+    bool isPresent();
     bool mSupportGain;
     bool mSupportEffects;
     bool mSupportExternalControl;
@@ -53,15 +63,18 @@ class InputFFDevice {
     int mVibraFd;
     int16_t mCurrAppId;
     int16_t mCurrMagnitude;
+    std::mutex mtx;
 };
 
 class LedVibratorDevice {
   public:
     LedVibratorDevice();
     int on(int32_t timeoutMs);
-    int onWaveform(int waveformIndex);
     int off();
     bool mDetected;
+    bool mIsLdo;
+    // Awinic haptics exposed through the LED class, with vmax and waveform_index
+    bool mIsAwinic;
     int write_value(const char* file, const char* value);
     int write_value(const char* file, int value);
 };
@@ -70,6 +83,8 @@ class Vibrator : public BnVibrator {
   public:
     class InputFFDevice ff;
     class LedVibratorDevice ledVib;
+    Vibrator();
+    ~Vibrator();
 
     ndk::ScopedAStatus getCapabilities(int32_t* _aidl_return) override;
     ndk::ScopedAStatus off() override;
@@ -81,8 +96,8 @@ class Vibrator : public BnVibrator {
     ndk::ScopedAStatus getSupportedEffects(std::vector<Effect>* _aidl_return) override;
     ndk::ScopedAStatus setAmplitude(float amplitude) override;
     ndk::ScopedAStatus setExternalControl(bool enabled) override;
-    ndk::ScopedAStatus getCompositionDelayMax(int32_t* maxDelayMs);
-    ndk::ScopedAStatus getCompositionSizeMax(int32_t* maxSize);
+    ndk::ScopedAStatus getCompositionDelayMax(int32_t* maxDelayMs) override;
+    ndk::ScopedAStatus getCompositionSizeMax(int32_t* maxSize) override;
     ndk::ScopedAStatus getSupportedPrimitives(std::vector<CompositePrimitive>* supported) override;
     ndk::ScopedAStatus getPrimitiveDuration(CompositePrimitive primitive,
                                             int32_t* durationMs) override;
@@ -91,6 +106,31 @@ class Vibrator : public BnVibrator {
     ndk::ScopedAStatus getSupportedAlwaysOnEffects(std::vector<Effect>* _aidl_return) override;
     ndk::ScopedAStatus alwaysOnEnable(int32_t id, Effect effect, EffectStrength strength) override;
     ndk::ScopedAStatus alwaysOnDisable(int32_t id) override;
+    ndk::ScopedAStatus getResonantFrequency(float* resonantFreqHz) override;
+    ndk::ScopedAStatus getQFactor(float* qFactor) override;
+    ndk::ScopedAStatus getFrequencyResolution(float* freqResolutionHz) override;
+    ndk::ScopedAStatus getFrequencyMinimum(float* freqMinimumHz) override;
+    ndk::ScopedAStatus getBandwidthAmplitudeMap(std::vector<float>* _aidl_return) override;
+    ndk::ScopedAStatus getPwlePrimitiveDurationMax(int32_t* durationMs) override;
+    ndk::ScopedAStatus getPwleCompositionSizeMax(int32_t* maxSize) override;
+    ndk::ScopedAStatus getSupportedBraking(std::vector<Braking>* supported) override;
+    ndk::ScopedAStatus composePwle(const std::vector<PrimitivePwle>& composite,
+                                   const std::shared_ptr<IVibratorCallback>& callback) override;
+
+  private:
+    static void composePlayThread(Vibrator* vibrator, const std::vector<CompositeEffect>& composite,
+                                  const std::shared_ptr<IVibratorCallback>& callback);
+    void initPrimitives();
+    bool isPrimitiveSupported(CompositePrimitive primitive);
+
+    // Indexed by CompositePrimitive, 0 means unsupported
+    std::array<int32_t, static_cast<size_t>(CompositePrimitive::LOW_TICK) + 1>
+            mPrimitiveDurationsMs;
+    bool mSupportCompose;
+    std::thread composeThread;
+    int epollfd;
+    int pipefd[2];
+    std::atomic<bool> inComposition;
 };
 
 }  // namespace vibrator
